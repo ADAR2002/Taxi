@@ -6,6 +6,6 @@ const dec = require('../middleware/auth');
 
 
 router.post('/add-role', dec.authMiddleware, checkAdmin.checkAdmin, jobRoleController.addRole);
-router.get('/', dec.authMiddleware, checkAdmin.checkAdmin, jobRoleController.getAllRoles);
+router.get('/', jobRoleController.getAllRoles);
 router.delete('/:id', dec.authMiddleware, checkAdmin.checkAdmin, jobRoleController.removeRole);
 module.exports = router;

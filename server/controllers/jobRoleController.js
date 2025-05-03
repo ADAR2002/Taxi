@@ -9,7 +9,8 @@ try {
     exports.addRole = async (req, res) => {
         const role = new JobRole({
             title: req.body.title,
-            createdBy:req.user.id
+            description: req.body.description,
+            createdBy: req.user.id
         })
         await role.save();
         res.status(201).json({

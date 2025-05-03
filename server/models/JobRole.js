@@ -5,6 +5,10 @@ const jobRoleSchema = mongoose.Schema({
         unique: true,
         require: true
     },
+    description: {
+        type: String,
+        require: true
+    },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId, ref: 'User',
     }
@@ -14,6 +18,6 @@ const jobRoleSchema = mongoose.Schema({
     }
 );
 
-const roleModel = mongoose.model('Job Role',jobRoleSchema);
+const roleModel = mongoose.model('Job Role', jobRoleSchema);
 
 module.exports = roleModel;

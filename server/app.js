@@ -14,7 +14,7 @@ mongoose.connect(process.env.DP_URL)
 // APIS
 app.use('/api/auth', require('./routes/authRoute'));
 app.use('/api/roles', require('./routes/jobRoleRoute'));
-
+app.use('/api/employees', require('./routes/employeeRoute'));
 
 
 const PORT = process.env.PORT || 5001;
