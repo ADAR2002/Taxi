@@ -12,7 +12,10 @@ const JobRole = require('../models/JobRole');
 try {
     exports.apply = async (req, res) => {
         const user = {
-            name: req.body.name,
+            userName: req.body.userName,
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            phone: req.body.phone,
             email: req.body.email,
             password: req.body.password,
         };
@@ -22,7 +25,7 @@ try {
         const isJobRoleHere = await JobRole.findById(jobRoleId);
         console.log(jobRoleId);
         console.log(isJobRoleHere);
-        
+
         if (!isJobRoleHere) {
             return res.status(400).json(
                 {
@@ -33,7 +36,10 @@ try {
         }
         if (!isUserHere) {
             isUserHere = new User({
-                name: user.name,
+                userName: user.userName,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                phone: user.phone,
                 email: user.email,
                 password: user.password,
                 role: 'employee'
@@ -68,7 +74,7 @@ try {
         const employee = await Employee.findByIdAndUpdate(
             req.params.id,
             { status: 'Aproved' },
-        ).populate('user', 'name email');
+        ).populate('user', 'userName firstName lastName email');
         if (!employee) {
             return res.status(404).json(
                 {
@@ -112,8 +118,11 @@ try {
                 message: 'Employee is not found'
             });
         }
+        console.log(employee);
+        const user = await User.findOne(employee.user);
         /// isRoleUsed  
         await employee.deleteOne();
+        await user.deleteOne();
         res.status(200).json({
             success: true,
             message: 'Employee is removed'
@@ -137,7 +146,11 @@ try {
  */
 try {
     exports.getAllEmployee = async (req, res) => {
-        const result = await Employee.find().populate('user', 'name email').populate('jobRole', 'title');
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+
+        const result = await Employee.find().skip(skip).limit(limit).populate('user', 'userName firstName lastName email').populate('jobRole', 'title');
         console.log(result);
         res.status(200).json({
             success: true,
@@ -156,7 +169,7 @@ try {
 
 
 /**
- * @desc delete employee
+ * @desc git employee
  * @route /:id
  * @method get
  * @access public
@@ -164,7 +177,7 @@ try {
 
 try {
     exports.getEmployee = async (req, res) => {
-        const employee = await Employee.findById(req.params.id).populate('user', 'name email').populate('jobRole', 'title');
+        const employee = await Employee.findById(req.params.id).populate('user', 'userName firstName lastName email').populate('jobRole', 'title');
         if (!employee) {
             return res.status(404).json({
                 success: false,

@@ -39,7 +39,7 @@ try {
  */
 try {
     exports.getAllRoles = async (req, res) => {
-        const result = await JobRole.find().populate('createdBy', 'name email');
+        const result = await JobRole.find().populate('createdBy', 'userName firstName lastName email');
         console.log(result);
         res.status(200).json({
             success: true,
