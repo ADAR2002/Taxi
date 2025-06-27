@@ -9,6 +9,10 @@ const jobRoleSchema = mongoose.Schema({
         type: String,
         require: true
     },
+    roles:{
+        type: [String],
+        default:[]
+    },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId, ref: 'User',
     }

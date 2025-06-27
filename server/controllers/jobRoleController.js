@@ -10,6 +10,7 @@ try {
         const role = new JobRole({
             title: req.body.title,
             description: req.body.description,
+            roles:req.body.roles,
             createdBy: req.user.id
         })
         await role.save();
