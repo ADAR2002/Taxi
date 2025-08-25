@@ -23,9 +23,9 @@ const driverSchema = mongoose.Schema({
     },
     vehicleType: {
         type: String,
-        enum:["Vip","regular","economic"],
+        enum:["Vip","Regular","Economic"],
         require: true,
-        default:"regular"
+        default:"Regular"
     },
     vehicleSize: {
         type: Number,

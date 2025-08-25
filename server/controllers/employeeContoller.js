@@ -9,8 +9,9 @@ const checkUser = require('../service/userService');
  * @access public
  */
 
-try {
-    exports.apply = async (req, res) => {
+
+exports.apply = async (req, res) => {
+    try {
         const user = {
             userName: req.body.userName,
             firstName: req.body.firstName,
@@ -65,13 +66,15 @@ try {
         const result = await employee.save();
         res.status(201).json(result);
     }
-} catch (error) {
-    console.log(error);
-    res.status(500).json({
-        success: true,
-        message: 'Something wrong '
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success: true,
+            message: 'Something wrong ',
+            error: error.message,
+        }
+        );
     }
-    );
 }
 
 /**
@@ -81,8 +84,9 @@ try {
  * @access public
  */
 
-try {
-    exports.approve = async (req, res) => {
+
+exports.approve = async (req, res) => {
+    try {
         const employee = await Employee.findByIdAndUpdate(
             req.params.id,
             { status: 'Aproved' },
@@ -102,16 +106,18 @@ try {
             }
         );
     }
-} catch (error) {
-    console.log(error);
-    res.status(500).json(
-        {
-            success: false,
-            message: 'Something wrong '
-        }
-    );
-}
+    catch (error) {
+        console.log(error);
+        res.status(500).json(
+            {
+                success: false,
+                message: 'Something wrong ',
+                error: error.message,
+            }
+        );
+    }
 
+}
 
 
 /**
@@ -121,13 +127,15 @@ try {
  * @access public
  */
 
-try {
-    exports.removeEmployee = async (req, res) => {
+
+exports.removeEmployee = async (req, res) => {
+    try {
         const employee = await Employee.findById(req.params.id);
         if (!employee) {
             return res.status(404).json({
                 success: false,
-                message: 'Employee is not found'
+                message: 'Employee is not found',
+                error: error.message,
             });
         }
         console.log(employee);
@@ -139,16 +147,16 @@ try {
             success: true,
             message: 'Employee is removed'
         });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: "somthing wrong",
+            error: error.message,
+        });
     }
-} catch (error) {
-    console.log(error);
-    res.status(500).json({
-        success: false,
-        message: "somthing wrong",
-        error: error.message,
-    });
-}
 
+}
 
 /**
  * @desc get all employee
@@ -156,8 +164,9 @@ try {
  * @method get
  * @access public
  */
-try {
-    exports.getAllEmployee = async (req, res) => {
+
+exports.getAllEmployee = async (req, res) => {
+    try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
@@ -170,13 +179,14 @@ try {
             data: result
         });
     }
-} catch (error) {
-    console.log(error);
-    res.status(500).json({
-        success: false,
-        message: " can't get all Employees",
-        error: error.message,
-    });
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: " can't get all Employees",
+            error: error.message,
+        });
+    }
 }
 
 
@@ -187,8 +197,9 @@ try {
  * @access public
  */
 
-try {
-    exports.getEmployee = async (req, res) => {
+
+exports.getEmployee = async (req, res) => {
+    try {
         const employee = await Employee.findById(req.params.id).populate('user', 'userName firstName lastName email').populate('jobRole', 'title');
         if (!employee) {
             return res.status(404).json({
@@ -201,12 +212,12 @@ try {
             success: true,
             data: employee
         });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: "somthing wrong",
+            error: error.message,
+        });
     }
-} catch (error) {
-    console.log(error);
-    res.status(500).json({
-        success: false,
-        message: "somthing wrong",
-        error: error.message,
-    });
-}
+} 

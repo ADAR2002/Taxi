@@ -1,6 +1,5 @@
 const Trip = require('../models/trip');
 const Driver = require('../models/Driver');
-const { Types } = require('mongoose');
 /**
  * @desc Create new trip
  * @route /new_trip
@@ -12,6 +11,7 @@ exports.newTrip = async (req, res) => {
     try {
         const trip = Trip({
             userID: req.body.userID,
+            driverID: req.body.driverID,
             start_location: { coordinates: [req.body.start_location_lat, req.body.start_location_lng] },
             end_location: { coordinates: [req.body.end_location_lat, req.body.end_location_lng] },
             distance_km: req.body.distance_km,

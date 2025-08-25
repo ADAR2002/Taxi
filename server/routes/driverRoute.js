@@ -11,5 +11,6 @@ router.put('/availablility/:id', driverController.availablility);
 router.delete('/:id', dec.authMiddleware, checkAdmin.checkAdmin,driverController.removeDriver);
 router.get('/:id', driverController.getDriver);
 router.get('/',dec.authMiddleware, checkAdmin.checkAdmin, driverController.getAllDriver);
+router.get('/trips/:id', driverController.getTripsForDrivder);
 
 module.exports = router;

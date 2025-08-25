@@ -1,5 +1,6 @@
 const Driver = require('../models/Driver');
 const User = require('../models/User');
+const Trip = require('../models/trip');
 const checkUser = require('../service/userService');
 /**
  * @desc Create new driver
@@ -8,8 +9,9 @@ const checkUser = require('../service/userService');
  * @access public
  */
 
-try {
-    exports.apply = async (req, res) => {
+
+exports.apply = async (req, res) => {
+    try {
         const user = {
             userName: req.body.userName,
             firstName: req.body.firstName,
@@ -32,7 +34,7 @@ try {
                 role: 'driver'
             });
             const check = await checkUser.checkUserIsTaken(isUserHere.email, isUserHere.phone, isUserHere.userName);
-            
+
             if (check) {
                 return res.status(500).json({
                     success: false,
@@ -57,14 +59,14 @@ try {
         }
         const result = await driver.save();
         res.status(201).json(result);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success: true,
+            message: error.message
+        }
+        );
     }
-} catch (error) {
-    console.log(error);
-    res.status(500).json({
-        success: true,
-        message: error.message
-    }
-    );
 }
 
 /**
@@ -74,8 +76,9 @@ try {
  * @access public
  */
 
-try {
-    exports.approve = async (req, res) => {
+
+exports.approve = async (req, res) => {
+    try {
         const driver = await Driver.findByIdAndUpdate(
             req.params.id,
             { status: 'Aproved' },
@@ -94,17 +97,17 @@ try {
                 message: 'Update done'
             }
         );
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(
+            {
+                success: false,
+                message: 'Something wrong '
+            }
+        );
     }
-} catch (error) {
-    console.log(error);
-    res.status(500).json(
-        {
-            success: false,
-            message: 'Something wrong '
-        }
-    );
-}
 
+}
 /**
  * @desc change isAvailable
  * @route /availablility/:id
@@ -112,8 +115,9 @@ try {
  * @access public
  */
 
-try {
-    exports.availablility = async (req, res) => {
+
+exports.availablility = async (req, res) => {
+    try {
         const driver = await Driver.findByIdAndUpdate(
             { user: req.user._id },
             { isAvailable: req.body.isAvailable },
@@ -137,14 +141,15 @@ try {
             }
         );
     }
-} catch (error) {
-    console.log(error);
-    res.status(500).json(
-        {
-            success: false,
-            message: 'Something wrong '
-        }
-    );
+    catch (error) {
+        console.log(error);
+        res.status(500).json(
+            {
+                success: false,
+                message: 'Something wrong '
+            }
+        );
+    }
 }
 
 
@@ -155,8 +160,9 @@ try {
  * @access public
  */
 
-try {
-    exports.removeDriver = async (req, res) => {
+
+exports.removeDriver = async (req, res) => {
+    try {
         const driver = await Driver.findById(req.params.id);
         if (!driver) {
             return res.status(404).json({
@@ -173,15 +179,16 @@ try {
             message: 'Driver is removed'
         });
     }
-} catch (error) {
-    console.log(error);
-    res.status(500).json({
-        success: false,
-        message: "somthing wrong",
-        error: error.message,
-    });
-}
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: "somthing wrong",
+            error: error.message,
+        });
+    }
 
+}
 
 /**
  * @desc get all drivers
@@ -189,8 +196,9 @@ try {
  * @method get
  * @access public
  */
-try {
-    exports.getAllDriver = async (req, res) => {
+
+exports.getAllDriver = async (req, res) => {
+    try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
@@ -201,14 +209,14 @@ try {
             count: result.length,
             data: result
         });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: " can't get all drivers",
+            error: error.message,
+        });
     }
-} catch (error) {
-    console.log(error);
-    res.status(500).json({
-        success: false,
-        message: " can't get all drivers",
-        error: error.message,
-    });
 }
 
 
@@ -219,8 +227,9 @@ try {
  * @access public
  */
 
-try {
-    exports.getDriver = async (req, res) => {
+
+exports.getDriver = async (req, res) => {
+    try {
         const driver = await Driver.findById(req.params.id).populate('user', 'userName firstName lastName email');
         if (!driver) {
             return res.status(404).json({
@@ -234,11 +243,40 @@ try {
             data: driver
         });
     }
-} catch (error) {
-    console.log(error);
-    res.status(500).json({
-        success: false,
-        message: "somthing wrong",
-        error: error.message,
-    });
-}
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: "somthing wrong",
+            error: error.message,
+        });
+    }
+} 
+
+/**
+ * @desc get trips for driver
+ * @route /trips/:id
+ * @method get
+ * @access public
+ */
+
+
+exports.getTripsForDrivder = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+        const trips = await Trip.find({driverID : req.params.id}).skip(skip).limit(limit);
+        res.status(200).json({
+            success: true,
+            data: trips
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: "somthing wrong",
+            error: error.message,
+        });
+    }
+} 

@@ -8,9 +8,9 @@ const checkUser = require('../service/userService');
  * @access public
  */
 
-try {
-    exports.register = async (req, res) => {
 
+exports.register = async (req, res) => {
+    try {
         const user = new User({
             userName: req.body.userName,
             firstName: req.body.firstName,
@@ -30,12 +30,14 @@ try {
         const result = await user.save();
         res.status(201).json(result);
     }
-} catch (error) {
-    console.log(error);
-    res.status(500).json({
-        success: false,
-        message: "somthing wrong"
-    });
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: "somthing wrong",
+            error: error.message
+        });
+    }
 }
 
 /**
@@ -45,8 +47,9 @@ try {
  * @access public
  */
 
-try {
-    exports.login = async (req, res) => {
+
+exports.login = async (req, res) => {
+    try {
         const { email, password } = req.body;
         const user = await User.findOne({ email, password })
         if (!user) {
@@ -58,7 +61,8 @@ try {
         const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET);
         res.status(200).json({ token, user });
     }
-} catch (error) {
-    console.log(error);
-    res.status(500).json({ message: 'Something wrong ' });
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: 'Something wrong ', error: error.message });
+    }
 }
