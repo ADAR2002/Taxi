@@ -32,7 +32,7 @@ const tripSchema = mongoose.Schema({
     price: Number,
     status: {
         type: String,
-        enum: ["Panding", "accepted", "started", "completed", "cancelled"],
+        enum: ["Panding", "Accepted", "Started", "Completed", "Cancelled"],
         default: "Panding"
     }
 }, {

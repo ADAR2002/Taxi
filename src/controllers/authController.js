@@ -1,4 +1,6 @@
 const User = require('../models/User');
+const Employee = require('../models/Employee');
+const Driver = require('../models/Driver');
 const jwt = require('jsonwebtoken');
 const checkUser = require('../service/userService');
 /**
@@ -51,14 +53,24 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const user = await User.findOne({ email, password })
+        let user = await User.findOne({ email, password })
         if (!user) {
             return res.status(401).json({
                 success: false,
                 message: 'email or password is wrong'
             });
         }
-        const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET);
+        const role = user.role;
+        if(user.role == "driver"){
+            const x = user;
+            user = await Driver.findOne( {user:user._id});
+            user.user = x;
+        }else if(user.role == "employee"){
+            const x = user;
+            user = await Employee.findOne({user:user._id});
+            user.user = x;
+        }
+        const token = jwt.sign({ id: user._id, role: role }, process.env.JWT_SECRET);
         res.status(200).json({ token, user });
     }
     catch (error) {

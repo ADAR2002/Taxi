@@ -102,7 +102,7 @@ exports.approve = async (req, res) => {
         res.status(500).json(
             {
                 success: false,
-                message: 'Something wrong '
+                message:error.message
             }
         );
     }
@@ -111,7 +111,7 @@ exports.approve = async (req, res) => {
 /**
  * @desc change isAvailable
  * @route /availablility/:id
- * @method put
+ * @method post
  * @access public
  */
 
@@ -119,9 +119,8 @@ exports.approve = async (req, res) => {
 exports.availablility = async (req, res) => {
     try {
         const driver = await Driver.findByIdAndUpdate(
-            { user: req.user._id },
+            req.body.id,
             { isAvailable: req.body.isAvailable },
-            { new: true },
         )
         if (!driver) {
             return res.status(404).json(
@@ -146,7 +145,7 @@ exports.availablility = async (req, res) => {
         res.status(500).json(
             {
                 success: false,
-                message: 'Something wrong '
+                message: error.message
             }
         );
     }
@@ -183,8 +182,7 @@ exports.removeDriver = async (req, res) => {
         console.log(error);
         res.status(500).json({
             success: false,
-            message: "somthing wrong",
-            error: error.message,
+            message: error.message,
         });
     }
 
@@ -214,7 +212,6 @@ exports.getAllDriver = async (req, res) => {
         res.status(500).json({
             success: false,
             message: " can't get all drivers",
-            error: error.message,
         });
     }
 }
@@ -247,8 +244,7 @@ exports.getDriver = async (req, res) => {
         console.log(error);
         res.status(500).json({
             success: false,
-            message: "somthing wrong",
-            error: error.message,
+            message: error.message,
         });
     }
 } 
@@ -275,8 +271,7 @@ exports.getTripsForDrivder = async (req, res) => {
         console.log(error);
         res.status(500).json({
             success: false,
-            message: "somthing wrong",
-            error: error.message,
+            message: error.message
         });
     }
 } 

@@ -15,8 +15,7 @@ exports.authMiddleware = (req, res, next) => {
     } catch (err) {
         return res.status(401).json({
             success: false,
-            message: "something wronge",
-            error: err.message
+            message: err.message
         })
     }
 
