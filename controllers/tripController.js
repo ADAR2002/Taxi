@@ -46,14 +46,7 @@ exports.newTrip = async (req, res) => {
             req.body.vehicleType,
             req.body.vehicleSize
         );
-        console.log(drivers);
-        if (drivers.length == 0) {
-            return res.status(500).json({
-                success: false,
-                message: "We didn't find driver"
-            })
-        }
-
+        
         const driver = await assignTripToNextDriver(0, result);
         if (!driver) {
             return res.status(500).json({
