@@ -1,4 +1,3 @@
-const { default: mongoose } = require("mongoose");
 const Trip = require("../models/trip");
 const { notifyRider } = require('../utils/notifier');
 module.exports = (io, socket) => {
@@ -9,8 +8,8 @@ module.exports = (io, socket) => {
     });
 
     // response driver for trip
-    socket.on("trip:response", async ({ trip, driverID, accepted }) => {
-        console.log("Received trip:response:", { trip, driverID, accepted });
+    socket.on("trip:response", async ({ trip, driver, accepted }) => {
+        console.log("Received trip:response:", { trip, driver, accepted });
         if (accepted) {
             try {
                 await Trip.findByIdAndUpdate(
@@ -18,7 +17,7 @@ module.exports = (io, socket) => {
                     { status: "Accepted" }
                 );
                 const riderID = trip.userID;
-                notifyRider(riderID, "trip:accepted", driverID);
+                notifyRider(riderID, "trip:accepted", driver);
             } catch (err) {
                 console.error("Error updating trip or notifying rider:", err);
                 socket.emit("error", { message: "Server error while accepting trip" });
