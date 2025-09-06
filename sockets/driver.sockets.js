@@ -9,16 +9,20 @@ module.exports = (io, socket) => {
     });
 
     // response driver for trip
-    socket.on("trip:response", ({ trip, driverID, accepted }) => {
+    socket.on("trip:response", async ({ trip, driverID, accepted }) => {
         console.log("Received trip:response:", { trip, driverID, accepted });
         if (accepted) {
-            console.log(`driver ${driverID} accepted trip ${trip._id}`);
-            Trip.findByIdAndUpdate(
-                trip._id,
-                { status: "Accepted" }
-            );
-            const riderID = trip.userId;
-            notifyRider(riderID, "trip:accepted", { riderID, driverID });
+            try {
+                await Trip.findByIdAndUpdate(
+                    trip._id,
+                    { status: "Accepted" }
+                );
+                const riderID = trip.userID;
+                notifyRider(riderID, "trip:accepted", driverID);
+            } catch (err) {
+                console.error("Error updating trip or notifying rider:", err);
+                socket.emit("error", { message: "Server error while accepting trip" });
+            }
         }
     });
 }
