@@ -65,13 +65,25 @@ exports.login = async (req, res) => {
             const x = user;
             user = await Driver.findOne( {user:user._id});
             user.user = x;
+            if(user.status !== "Aproved"){
+                return res.status(403).json({
+                    success: false,
+                    message: "your account is not aproved yet"
+                });
+            }
         }else if(user.role == "employee"){
             const x = user;
             user = await Employee.findOne({user:user._id});
             user.user = x;
+            if(user.status !== "Aproved"){
+                return res.status(403).json({
+                    success: false,
+                    message: "your account is not aproved yet"
+                });
+            }
         }
         const token = jwt.sign({ id: user._id, role: role }, process.env.JWT_SECRET);
-        res.status(200).json({ token, user });
+        return res.status(200).json({ token, user });
     }
     catch (error) {
         console.log(error);

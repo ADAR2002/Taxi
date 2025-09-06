@@ -20,8 +20,8 @@ mongoose.connect(process.env.DP_URL)
     .catch(err => console.error('MONGO_ERROR:', err));
 
 const server = http.createServer(app);
-//const io = initSocket(server);
-//setIO(io);
+const io = initSocket(server);
+setIO(io);
     // APIS
 app.use('/api/auth', require('./routes/authRoute'));
 app.use('/api/users', require('./routes/userRoute'));
@@ -32,7 +32,7 @@ app.use('/api/trip', require('./routes/tripRoute'));
 
 
 const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`running at port ${PORT}`);
 })
 
