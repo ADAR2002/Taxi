@@ -9,23 +9,23 @@ let drivers;
  * @access public
  */
 
-function waitForDriverResponse(driver,trip){
+function waitForDriverResponse(driver, trip) {
     return new Promise(resolve => {
-        notifyDriver(driver._id,trip);
-            setTimeout(async () => {
-                console.log(trip);
-                const updateTrip = await Trip.findById(trip._id);
-                    if(updateTrip.status === "Panding")resolve(null);
-                    else resolve(driver);
-            }, 5000);
+        notifyDriver(driver._id, trip);
+        setTimeout(async () => {
+            console.log(trip);
+            const updateTrip = await Trip.findById(trip._id);
+            if (updateTrip.status === "Panding") resolve(null);
+            else resolve(driver);
+        }, 5000);
     })
 }
 
 async function assignTripToNextDriver(index, trip) {
-    if(index >= drivers.length)return null;
+    if (index >= drivers.length) return null;
     const driver = drivers[index];
-    const result = await waitForDriverResponse(driver,trip);
-    if(!result)return await assignTripToNextDriver(index + 1,trip);
+    const result = await waitForDriverResponse(driver, trip);
+    if (!result) return await assignTripToNextDriver(index + 1, trip);
     return result;
 }
 
@@ -46,17 +46,25 @@ exports.newTrip = async (req, res) => {
             req.body.vehicleType,
             req.body.vehicleSize
         );
-        
-        const driver = await assignTripToNextDriver(0,result);
-        if(!driver){
+        console.log(drivers);
+        if (drivers.length == 0) {
             return res.status(500).json({
                 success: false,
-                message:"We didn't find driver"
+                message: "We didn't find driver"
             })
+        }
+
+        const driver = await assignTripToNextDriver(0, result);
+        if (!driver) {
+            return res.status(500).json({
+                success: false,
+                message: "We didn't find driver"
+            })
+
         }
         await Trip.findByIdAndUpdate(
             result.id,
-            {driverID:driver._id}
+            { driverID: driver._id }
         );
         const resultTrip = await Trip.findById(result._id);
         return res.status(200).json(resultTrip);

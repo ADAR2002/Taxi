@@ -130,9 +130,7 @@ exports.availablility = async (req, res) => {
                 }
             );
         }
-        /*
-            SEND EMAIL TO DRIVER HE IS APPROVE
-        */
+
         res.status(201).json(
             {
                 success: true,
