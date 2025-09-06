@@ -8,11 +8,15 @@ const { setIO } = require("./utils/notifier");
 
 const app = express();
 
-app.use(express.json({limit:'50mb'}));
-app.use(express.urlencoded({limit:'50mb',extended:true}));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 dotenv.config();
-app.use(cors());
+app.use(cors({
+    origin: "*", // Or specify your frontend URL, e.g., "https://your-frontend.com"
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
 app.use(express.json());
 // connect DB
 mongoose.connect(process.env.DP_URL)
@@ -22,7 +26,7 @@ mongoose.connect(process.env.DP_URL)
 const server = http.createServer(app);
 const io = initSocket(server);
 setIO(io);
-    // APIS
+// APIS
 app.use('/api/auth', require('./routes/authRoute'));
 app.use('/api/users', require('./routes/userRoute'));
 app.use('/api/roles', require('./routes/jobRoleRoute'));

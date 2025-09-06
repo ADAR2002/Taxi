@@ -7,7 +7,9 @@ function initSocket(server) {
     io = require('socket.io')(server, {
         cors: {
             origin: "*",
-            methods: ["GET", "POST"]
+            methods: ["GET", "POST"],
+            allowedHeaders: ["Content-Type", "Authorization"],
+            credentials: true
         }
     });
 
