@@ -9,10 +9,10 @@ function notifyDriver(driverID, trip) {
     io.to(`driver:${driverID}`).emit("trip:request", trip);
 }
 
-function notifyRider(riderID, event, driver) {
-    console.log("Notifying rider:", riderID, event, driver);
+function notifyRider(riderID, event, {driverID,lat,lng}) {
+    console.log("Notifying rider:", riderID, event, {driverID,lat,lng});
     if (!io) throw new Error("Socket not init");
-    io.to(`rider:${riderID}`).emit(event,driver);
+    io.to(`rider:${riderID}`).emit(event, {driverID,lat,lng});
 }
 
 module.exports = { setIO,notifyDriver, notifyRider };

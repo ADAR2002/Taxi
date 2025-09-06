@@ -8,7 +8,7 @@ module.exports = (io, socket) => {
     });
 
     // response driver for trip
-    socket.on("trip:response", async ({ trip, driver, accepted }) => {
+    socket.on("trip:response", async ({ trip, driverID,lat,lng, accepted }) => {
         console.log("Received trip:response:", { trip, driver, accepted });
         if (accepted) {
             try {
@@ -17,7 +17,7 @@ module.exports = (io, socket) => {
                     { status: "Accepted" }
                 );
                 const riderID = trip.userID;
-                notifyRider(riderID, "trip:accepted", driver);
+                notifyRider(riderID, "trip:accepted", {driverID,lat,lng });
             } catch (err) {
                 console.error("Error updating trip or notifying rider:", err);
                 socket.emit("error", { message: "Server error while accepting trip" });
