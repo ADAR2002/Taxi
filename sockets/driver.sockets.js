@@ -10,10 +10,7 @@ module.exports = (io, socket) => {
 
     // response driver for trip
     socket.on("trip:response", ({ trip, driverID, accepted }) => {
-        if(!mongoose.Types.ObjectId.isValid(trip._id)){
-            console.error("Invalid trip ID");
-            return;
-        }
+        console.log("Received trip:response:", { trip, driverID, accepted });
         if (accepted) {
             console.log(`driver ${driverID} accepted trip ${trip._id}`);
             Trip.findByIdAndUpdate(
