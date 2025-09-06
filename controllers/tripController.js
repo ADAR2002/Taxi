@@ -9,7 +9,7 @@ let drivers;
  * @access public
  */
 
-function waitForDriverResponse(driver, trip) {
+async function waitForDriverResponse  (driver, trip) {
     return new Promise(resolve => {
         notifyDriver(driver._id, trip);
         setTimeout(async () => {
