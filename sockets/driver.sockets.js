@@ -9,7 +9,7 @@ module.exports = (io, socket) => {
 
     // response driver for trip
     socket.on("trip:response", async ({ trip, driverID,lat,lng, accepted }) => {
-        console.log("Received trip:response:", { trip, driver, accepted });
+        console.log("Received trip:response:", { trip, driverID, accepted });
         if (accepted) {
             try {
                 await Trip.findByIdAndUpdate(
