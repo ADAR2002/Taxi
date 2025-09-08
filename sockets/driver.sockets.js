@@ -1,4 +1,5 @@
 const Trip = require("../models/trip");
+const Driver = require("../models/driver");
 const { notifyRider } = require('../utils/notifier');
 module.exports = (io, socket) => {
     // join driver
