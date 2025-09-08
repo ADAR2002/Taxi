@@ -29,6 +29,7 @@ module.exports = (io, socket) => {
     // استقبال توفر السائق وتحديث موقعه
     socket.on("driverAvailable", async ({ driverId, lng,lat }) => {
         try {
+            console.log("Driver available:", { driverId, lng, lat });
             await Driver.findByIdAndUpdate(driverId, {
                 isAvailable: true,
                 location: {
@@ -53,6 +54,7 @@ module.exports = (io, socket) => {
 
     socket.on("trip:start", async ({ tripId }) => {
         try {
+            console.log("Trip started:", { tripId });
             // تحديث حالة الرحلة في قاعدة البيانات
             await Trip.findByIdAndUpdate(tripId, { status: "Started" });
         } catch (err) {
@@ -63,6 +65,7 @@ module.exports = (io, socket) => {
 
     socket.on("driverLocationUpdate", async ({ tripId, lng,lat }) => {
         try {
+            console.log("Driver location update:", { tripId, lng, lat });
             // تحديث موقع الرحلة في قاعدة البيانات
             await Trip.findByIdAndUpdate(tripId, {
                 currentLocation: {
@@ -88,6 +91,7 @@ module.exports = (io, socket) => {
 
     socket.on("trip:end", async ({ tripId, lng,lat }) => {
         try {
+            console.log("Trip ended:", { tripId, lng, lat });
             // تحديث حالة الرحلة في قاعدة البيانات
             await Trip.findByIdAndUpdate(tripId, {
                 status: "Completed",
