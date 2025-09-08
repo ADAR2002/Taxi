@@ -76,9 +76,9 @@ module.exports = (io, socket) => {
             });
             // جلب بيانات الرحلة لمعرفة الراكب
             const trip = await Trip.findById(tripId);
-            console.log("Trip data for location update:", trip);
             if (trip && trip.userID) {
-                // إرسال الموقع للراكب (غرفة الراكب أو socket.id الخاص به)
+                console.log("Trip data for location update:", trip);
+            
                 io.to(`rider:${trip.userID}`).emit("driverLocationUpdateToRider", {
                     tripId,
                     lng,
@@ -91,16 +91,13 @@ module.exports = (io, socket) => {
     });
 
 
-    socket.on("trip:end", async ({ tripId, lng,lat }) => {
+    socket.on("trip:end", async ({ tripId}) => {
         try {
-            console.log("Trip ended:", { tripId, lng, lat });
+            console.log("Trip ended:", { tripId});
             // تحديث حالة الرحلة في قاعدة البيانات
             await Trip.findByIdAndUpdate(tripId, {
-                status: "Completed",
-                endLocation: {
-                    type: "Point",
-                    coordinates: [lng,lat]
-                }
+                status: "Completed"
+
             });
         } catch (err) {
             console.error("Error in trip:end:", err);
