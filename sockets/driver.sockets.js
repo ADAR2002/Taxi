@@ -76,9 +76,10 @@ module.exports = (io, socket) => {
             });
             // جلب بيانات الرحلة لمعرفة الراكب
             const trip = await Trip.findById(tripId);
+            console.log("Trip data for location update:", trip);
             if (trip && trip.userID) {
                 // إرسال الموقع للراكب (غرفة الراكب أو socket.id الخاص به)
-                io.to(`rider:${trip.userID}`).emit("driverLocationUpdate", {
+                io.to(`rider:${trip.userID}`).emit("driverLocationUpdateToRider", {
                     tripId,
                     lng,
                     lat
