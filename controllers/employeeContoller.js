@@ -21,7 +21,7 @@ exports.apply = async (req, res) => {
             password: req.body.password,
         };
         let isUserHere = await User.findOne(user);
-        console.log(isUserHere);
+        //console.log(isUserHere);
         const jobRoleId = req.body.jobRoleId;
         const isJobRoleHere = await JobRole.findById(jobRoleId);
         if (!isJobRoleHere) {

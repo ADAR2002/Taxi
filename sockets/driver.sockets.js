@@ -5,12 +5,12 @@ module.exports = (io, socket) => {
     // join driver
     socket.on("driver:join", ({ driverID }) => {
         socket.join(`driver:${driverID}`);
-        console.log(`driver:${driverID} join`);
+        //console.log(`driver:${driverID} join`);
     });
 
     // response driver for trip
     socket.on("trip:response", async ({ trip, driverID, lat, lng, accepted }) => {
-        console.log("Received trip:response:", { trip, driverID, accepted });
+        //console.log("Received trip:response:", { trip, driverID, accepted });
         if (accepted) {
             try {
                 await Trip.findByIdAndUpdate(
@@ -20,17 +20,15 @@ module.exports = (io, socket) => {
                 const riderID = trip.userID;
                 notifyRider(riderID, "trip:accepted", { driverID, lat, lng });
             } catch (err) {
-                console.error("Error updating trip or notifying rider:", err);
-                socket.emit("error", { message: "Server error while accepting trip" });
+                //console.error("Error updating trip or notifying rider:", err);
             }
         }
     });
 
 
-    // استقبال توفر السائق وتحديث موقعه
     socket.on("driverAvailable", async ({ driverId, lng,lat }) => {
         try {
-            console.log("Driver available:", { driverId, lng, lat });
+            //console.log("Driver available:", { driverId, lng, lat });
             await Driver.findByIdAndUpdate(driverId, {
                 isAvailable: true,
                 location: {
@@ -42,11 +40,10 @@ module.exports = (io, socket) => {
             // حفظ driverId في socket لسهولة التعامل عند disconnect
             socket.driverId = driverId;
         } catch (err) {
-            console.error("Error in driverAvailable:", err);
+            //console.error("Error in driverAvailable:", err);
         }
     });
 
-    // عند خروج السائق من التطبيق
     socket.on("disconnect", async () => {
         if (socket.driverId) {
             await Driver.findByIdAndUpdate(socket.driverId, { isAvailable: false });
@@ -55,30 +52,25 @@ module.exports = (io, socket) => {
 
     socket.on("trip:start", async ({ tripId }) => {
         try {
-            console.log("Trip started:", { tripId });
-            // تحديث حالة الرحلة في قاعدة البيانات
+            //console.log("Trip started:", { tripId });
             await Trip.findByIdAndUpdate(tripId, { status: "Started" });
         } catch (err) {
-            console.error("Error in trip:start:", err);
-            socket.emit("error", { message: "Server error while starting trip" });
+            //console.error("Error in trip:start:", err);
         }
     });
 
     socket.on("driverLocationUpdate", async ({ tripId, lng,lat }) => {
         try {
-            console.log("Driver location update:", { tripId, lng, lat });
-            // تحديث موقع الرحلة في قاعدة البيانات
+            //console.log("Driver location update:", { tripId, lng, lat });
             await Trip.findByIdAndUpdate(tripId, {
                 currentLocation: {
                     type: "Point",
                     coordinates: [lng, lat]
                 }
             });
-            // جلب بيانات الرحلة لمعرفة الراكب
             const trip = await Trip.findById(tripId);
             if (trip && trip.userID) {
-                console.log("Trip data for location update:", trip);
-            
+                //console.log("Trip data for location update:", trip);
                 io.to(`rider:${trip.userID}`).emit("driverLocationUpdateToRider", {
                     tripId,
                     lng,
@@ -86,22 +78,20 @@ module.exports = (io, socket) => {
                 });
             }
         } catch (err) {
-            console.error("Error in driverLocationUpdate:", err);
+            //console.error("Error in driverLocationUpdate:", err);
         }
     });
 
 
     socket.on("trip:end", async ({ tripId}) => {
         try {
-            console.log("Trip ended:", { tripId});
-            // تحديث حالة الرحلة في قاعدة البيانات
+            //console.log("Trip ended:", { tripId});
             await Trip.findByIdAndUpdate(tripId, {
                 status: "Completed"
 
             });
         } catch (err) {
-            console.error("Error in trip:end:", err);
-            socket.emit("error", { message: "Server error while ending trip" });
+            //console.error("Error in trip:end:", err);
         }
     });
 }

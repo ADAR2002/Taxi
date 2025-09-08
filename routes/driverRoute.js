@@ -7,7 +7,6 @@ const dec = require('../middleware/auth');
 
 router.post('/apply', driverController.apply);
 router.put('/approve/:id', dec.authMiddleware, checkAdmin.checkAdmin, driverController.approve);
-router.post('/availablility', driverController.availablility);
 router.delete('/:id', dec.authMiddleware, checkAdmin.checkAdmin,driverController.removeDriver);
 router.get('/:id', driverController.getDriver);
 router.get('/',dec.authMiddleware, checkAdmin.checkAdmin, driverController.getAllDriver);

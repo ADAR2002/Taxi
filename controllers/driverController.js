@@ -108,47 +108,6 @@ exports.approve = async (req, res) => {
     }
 
 }
-/**
- * @desc change isAvailable
- * @route /availablility/:id
- * @method post
- * @access public
- */
-
-
-exports.availablility = async (req, res) => {
-    try {
-        const driver = await Driver.findByIdAndUpdate(
-            req.body.id,
-            { isAvailable: req.body.isAvailable },
-        )
-        if (!driver) {
-            return res.status(404).json(
-                {
-                    success: false,
-                    message: 'driver is not found'
-                }
-            );
-        }
-
-        res.status(201).json(
-            {
-                success: true,
-                message: 'Update done'
-            }
-        );
-    }
-    catch (error) {
-        console.log(error);
-        res.status(500).json(
-            {
-                success: false,
-                message: error.message
-            }
-        );
-    }
-}
-
 
 /**
  * @desc delete driver

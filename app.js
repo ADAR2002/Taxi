@@ -13,7 +13,7 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 dotenv.config();
 app.use(cors({
-    origin: "*", // Or specify your frontend URL, e.g., "https://your-frontend.com"
+    origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"]
 }));
